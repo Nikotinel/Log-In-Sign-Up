@@ -1,19 +1,14 @@
 package com.example.android_lessons
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.result.ActivityResult
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.android_lessons.databinding.ActivityInputBinding
-import com.example.android_lessons.databinding.ActivityMainBinding
 import kotlin.Boolean
 
 class InputActivity : AppCompatActivity() {
@@ -35,70 +30,71 @@ class InputActivity : AppCompatActivity() {
         Log.d("Click", "Init Second Activity")
 
         val result: Boolean? = intent.getBooleanExtra("key", false)
-        showScreen(result)
-    }
 
-    override fun onStart() {
-        super.onStart()
+        Log.d("Click", "Нажатие на кнопку $result")
 
-        val result: Boolean? = intent.getBooleanExtra("key", false)
-        loginOrSignup(result)
-    }
+        // Проверяем то, на какую кнопку нажали
+        if (result == true) {
 
-    fun showScreen(result: Boolean?) {
+            // Кнопка Sign Up
+            addUser()
+        }
 
-        if (result == false) {
+        else if (result == false) {
 
+            // Кнопка LogIn
             binding.inputCreateName.visibility = View.GONE
             binding.inputCreateLog.hint = getString(R.string.inputLoginLog)
             binding.inputCreatePass.hint = getString(R.string.inputLoginPass)
             binding.buttonAdd.text = getString(R.string.buttonLog)
+
+            logInUser()
         }
     }
 
-    fun loginOrSignup (result: Boolean?) {
-
-        val intent = Intent()
+    fun addUser() {
 
         lateinit var inputName: String
         lateinit var inputUserName: String
         lateinit var inputPass: String
 
-        if (result == false) {
+        binding.buttonAdd.setOnClickListener {
 
-            binding.buttonAdd.setOnClickListener {
+            inputName = binding.inputCreateName.text.toString().trim()
+            inputUserName = binding.inputCreateLog.text.toString().trim()
+            inputPass = binding.inputCreatePass.text.toString().trim()
 
-                inputUserName = binding.inputCreateLog.text.toString().trim()
-                inputPass = binding.inputCreatePass.text.toString().trim()
+            intent.putExtra("name", inputName)
+            intent.putExtra("username", inputUserName)
+            intent.putExtra("password", inputPass)
+            intent.putExtra("key", true)
 
-                intent.putExtra("username", inputUserName)
-                intent.putExtra("password", inputPass)
-                intent.putExtra("key", false)
+            Log.d("Click", "Отправка данных входа")
 
-                Log.d("Click", "Отправка данных входа")
+            setResult(RESULT_OK, intent)
+            finish()
 
-                setResult(RESULT_OK, intent)
-                finish()
-
-            }
         }
+    }
 
-        else {
+    fun logInUser() {
 
-            binding.buttonAdd.setOnClickListener {
+        lateinit var inputUserName: String
+        lateinit var inputPass: String
 
-                inputName = binding.inputCreateName.text.toString().trim()
-                inputUserName = binding.inputCreateLog.text.toString().trim()
-                inputPass = binding.inputCreatePass.text.toString().trim()
+        binding.buttonAdd.setOnClickListener {
 
-                intent.putExtra("name", inputName)
-                intent.putExtra("username", inputUserName)
-                intent.putExtra("password", inputPass)
-                intent.putExtra("key", true)
+            inputUserName = binding.inputCreateLog.text.toString().trim()
+            inputPass = binding.inputCreatePass.text.toString().trim()
 
-                setResult(RESULT_OK, intent)
-                finish()
-            }
+            intent.putExtra("username", inputUserName)
+            intent.putExtra("password", inputPass)
+            intent.putExtra("key", false)
+
+            Log.d("Click", "Отправка данных создания аккаунта")
+
+            setResult(RESULT_OK, intent)
+            finish()
         }
     }
 }

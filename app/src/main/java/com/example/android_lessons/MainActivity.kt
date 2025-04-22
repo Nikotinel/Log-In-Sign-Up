@@ -22,10 +22,6 @@ class MainActivity : AppCompatActivity() {
 
     var userList: MutableList<User> = mutableListOf()
 
-    var name: String? = null
-    var userName: String? = null
-    var password: String? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -45,9 +41,9 @@ class MainActivity : AppCompatActivity() {
 
             if (result.resultCode == Activity.RESULT_OK) {
 
-                name = result.data?.getStringExtra("name")
-                userName = result.data?.getStringExtra("username")
-                password = result.data?.getStringExtra("password")
+                var name: String? = result.data?.getStringExtra("name")
+                var userName: String? = result.data?.getStringExtra("username")
+                var password: String? = result.data?.getStringExtra("password")
 
                 val key = result.data?.getBooleanExtra("key", false)
 
@@ -62,7 +58,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 else
-                    comrasionResult(userName, password)
+                    compareResult(userName, password)
             }
         }
     }
@@ -89,6 +85,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+
+    // Добавление пользователя в список
     fun addUser(name: String?, userName: String?, password: String?) {
 
         val user: User = User(name, userName, password)
@@ -97,6 +95,7 @@ class MainActivity : AppCompatActivity() {
         Log.d("Click", "User $userList")
     }
 
+    // Отображение данных о пользователе если он найден/создан
     fun showScreen(name: String?, userName: String?, password: String?) = with(binding) {
 
         Log.d("Click", "Получили true")
@@ -112,50 +111,40 @@ class MainActivity : AppCompatActivity() {
         buttonLog.visibility = View.GONE
     }
 
-    fun comrasionResult(userName: String?, password: String?) = with(binding) {
+    // Проверка авторизации
+    fun compareResult(userName: String?, password: String?) = with(binding) {
 
         Log.d("Click", "Начало авторизации")
 
-        if (userList.size == 0) {
+        val user: User? = userList.find { it.username == userName && it.password == password }
 
+        if (user != null) {
+
+            Log.d("Click", "Удачная авторизация")
             userInfo.visibility = View.VISIBLE
-            textName.text = "Сначала добавьте пользователя"
+            buttonExit.visibility = View.VISIBLE
+
+            textName.text = user.name
+            textLog.text = user.username
+            textPass.text = user.password
+
+            buttonSign.visibility = View.GONE
+            buttonLog.visibility = View.GONE
+
+            buttonExit.setOnClickListener {
+                resetActivity()
+            }
         }
 
         else {
 
-            userList.forEach {
+            userInfo.visibility = View.VISIBLE
+            textName.text = "Пользователь не найден"
 
-                if (it.username == userName && it.password == password) {
-
-                    Log.d("Click", "Удачная авторизация")
-                    userInfo.visibility = View.VISIBLE
-                    buttonExit.visibility = View.VISIBLE
-
-                    textName.text = it.name
-                    textLog.text = it.username
-                    textPass.text = it.password
-
-                    buttonSign.visibility = View.GONE
-                    buttonLog.visibility = View.GONE
-
-                    buttonExit.setOnClickListener {
-                        resetActivity()
-                    }
-                }
-
-                else {
-
-                    userInfo.visibility = View.VISIBLE
-                    textName.text = "Пользователь не найден"
-
-                }
-
-            }
         }
-
     }
 
+    // Очищаем экран
     fun resetActivity() = with(binding) {
 
         userInfo.visibility = View.GONE
@@ -169,6 +158,5 @@ class MainActivity : AppCompatActivity() {
         buttonLog.visibility = View.VISIBLE
 
     }
-
 }
 
