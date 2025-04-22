@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Android_Lessons</string>
+
+<!--  Текста кнопок  -->
+    <string name="buttonLog">Log In</string>
+    <string name="buttonSign">Sign Up</string>
+    <string name="buttonExit">Exit</string>
+    <string name="buttonAdd">Add User</string>
+
+<!--  Текста полей ввода  -->
+    <string name="inputCreateName">Enter a name</string>
+    <string name="inputCreateLog">Create username</string>
+    <string name="inputCreatePass">Inp password</string>
+    <string name="inputLoginLog">Enter username</string>
+    <string name="inputLoginPass">Enter password</string>
+</resources>
